@@ -25,6 +25,8 @@ int offsetx, offsety;
 CHESSMAN_CLASS wuziqi[CHESSBOARD_WIDTH][CHESSBOARD_HEIGHT];
 int turn_black=1;
 int mode=3;
+int turn = 1;
+char turn_str[3];
 int main(int argc, char *argv[]) {
 	ShowWindow(FindWindow("ConsoleWindowClass", argv[0]), 0);
 	chessboard_init();
@@ -190,10 +192,18 @@ int main(int argc, char *argv[]) {
 				wuziqi[7][7].chessman_state = 1;
 				setfillcolor(BLACK);
 				solidcircle(454 + 7 * 38, 94 + 7 * 38, 15);
+				settextcolor(WHITE);
+				setbkmode(TRANSPARENT);//设置字体背景透明
+				settextstyle(20, 0, "黑体");//设置文字样式，宽度20，高度自适应
+				turn_str[0] = (turn / 100) + '0';
+				turn_str[1] = (turn / 10) + '0';
+				turn_str[2] = (turn % 10) + '0';
+				outtextxy(454 + 7 * 38 - 5, 94 + 7 * 38, turn_str);
+				turn++;
 				break;
 			}
 			if (chess_click.uMsg == WM_LBUTTONUP) {
-				local_info = AI(1);
+				local_info = AI(2);
 				AIplot_x = local_info / 100;
 				AIplot_y = local_info % 100;
 				if (wuziqi[AIplot_x][AIplot_y].chessman_state == 0)
@@ -203,6 +213,16 @@ int main(int argc, char *argv[]) {
 					AIchessx = AIplot_x * 38 + 454;
 					AIchessy = AIplot_y * 38 + 94;
 					solidcircle(AIchessx, AIchessy, 15);
+
+					settextcolor(BLACK);
+					setbkmode(TRANSPARENT);//设置字体背景透明
+					settextstyle(20, 0, "黑体");//设置文字样式，宽度20，高度自适应
+					turn_str[0] = (turn / 100)+'0';
+					turn_str[1] = (turn %100/ 10)+'0';
+					turn_str[2] = (turn % 10)+'0';
+					outtextxy(AIchessx-5, AIchessy, turn_str);
+					turn++;
+
 					if (vord(AIplot_x, AIplot_y, 2) == 0)
 					{
 						settextcolor(BLACK);
@@ -220,6 +240,16 @@ int main(int argc, char *argv[]) {
 						AIchessx = AIplot_x * 38 + 454;
 						AIchessy = AIplot_y * 38 + 94;
 						solidcircle(AIchessx, AIchessy, 15);
+
+						settextcolor(WHITE);
+						setbkmode(TRANSPARENT);//设置字体背景透明
+						settextstyle(20, 0, "黑体");//设置文字样式，宽度20，高度自适应
+						turn_str[0] = (turn / 100) + '0';
+						turn_str[1] = (turn %100/ 10) + '0';
+						turn_str[2] = (turn % 10) + '0';
+						outtextxy(AIchessx-5, AIchessy, turn_str);
+						turn++;
+
 						if (vord(AIplot_x, AIplot_y, 1) == 0)
 						{
 							settextcolor(BLACK);
@@ -284,7 +314,7 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_jingong += 5;
+								score_jingong += 0;
 							}
 						}; break;
 						case 3: {
@@ -298,7 +328,7 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_jingong += 5;
+								score_jingong += 0;
 							}
 						}; break;
 						case 4: {
@@ -312,7 +342,7 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_jingong += 5;
+								score_jingong += 0;
 							}
 						}; break;
 						default:
@@ -355,7 +385,7 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_fangshou += 5;
+								score_fangshou += 0;
 							}
 						}; break;
 						case 3: {
@@ -369,13 +399,13 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_fangshou += 5;
+								score_fangshou += 0;
 							}
 						}; break;
 						case 4: {
 							if (jieduan[i] == 0)
 							{
-								score_fangshou += 200;
+								score_fangshou += 1000;
 							}
 							else if (jieduan[i] == 1)
 							{
@@ -383,7 +413,7 @@ int AI(int v)//AI思考函数
 							}
 							else if (jieduan[i] == 2)
 							{
-								score_fangshou += 5;
+								score_fangshou += 0;
 							}
 						}; break;
 						default:
@@ -464,7 +494,6 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			ly++;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 				
@@ -489,15 +518,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			ly--;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[1] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[1] = 3-v;
 			}
 			break;
 		}
@@ -528,15 +556,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			lx++;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[2] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[2] = 3-v;
 			}
 			break;
 		}
@@ -553,15 +580,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			lx--;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[3] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[3] = 3-v;
 			}
 			break;
 		}
@@ -593,16 +619,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			lx++;
-			ly--;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[4] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[4] = 3-v;
 			}
 			break;
 		}
@@ -620,16 +644,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			ly++;
-			lx--;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[5] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[5] = 3-v;
 			}
 			break;
 		}
@@ -661,16 +683,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			ly++;
-			lx++;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[6] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[6] = 3-v;
 			}
 			break;
 		}
@@ -688,16 +708,14 @@ int vord(int x,int y,int v)//胜负判定
 		}
 		else
 		{
-			ly--;
-			lx--;
 			if (((lx >= 0) && (lx < 14)) && ((ly >= 0) && (ly < 14)))
 			{
 
-				lianzizhongduan[0] = wuziqi[lx][ly].chessman_state;
+				lianzizhongduan[7] = wuziqi[lx][ly].chessman_state;
 			}
 			else
 			{
-				lianzizhongduan[0] = 3-v;
+				lianzizhongduan[7] = 3-v;
 			}
 			break;
 		}
